@@ -7,6 +7,8 @@ class SimpleReactFileUpload extends React.Component {
         this.state = {
             file:null
         };
+        this.state = {result : 'There will be result'};
+
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
         this.fileUpload = this.fileUpload.bind(this)
@@ -15,9 +17,9 @@ class SimpleReactFileUpload extends React.Component {
         e.preventDefault(); // Stop form submit
         this.fileUpload(this.state.file)
             .then((response) => {
-                alert("Алертом, Карл!");
-                console.log(response.data);
-        })
+                this.setState({result : response.data});
+                console.log(response)
+            })
     }
     onChange(e) {
         this.setState({file:e.target.files[0]})
@@ -40,6 +42,8 @@ class SimpleReactFileUpload extends React.Component {
                 <h1>File Upload</h1>
                 <input type="file" onChange={this.onChange} />
                 <button type="submit">Upload</button>
+                <br/>
+                <textarea value={this.state.result}></textarea>
             </form>
         )
     }
