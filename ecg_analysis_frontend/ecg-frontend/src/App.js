@@ -2,7 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import lg from './tensorflow-icon.svg';
 import './App.css';
-import Button from "@material-ui/core/Button";
+
+import SimpleReactFileUpload from "./Uploader";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           rel="noopener noreferrer"
         >
         </a>
-        <a><Button variant="contained">Upload</Button></a>
+          <SimpleReactFileUpload/>
       </header>
     </div>
   );
