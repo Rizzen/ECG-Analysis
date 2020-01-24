@@ -25,7 +25,7 @@ class SimpleReactFileUpload extends React.Component {
         this.setState({file:e.target.files[0]})
     }
     fileUpload(file){
-        const url = 'http://127.0.0.1:8000/ecg/';
+        const url = 'http://localhost:8000/ecg/';
         const formData = new FormData();
         formData.append('files',file);
         const config = {

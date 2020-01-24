@@ -1,24 +1,24 @@
 version: '3'
 
 services:
-  # web:
-  #   build: 
-  #     context: ecg_analysis_backend
-  #   command: python3 ecg_analysis_backend/manage.py runserver 0.0.0.0:8000
-  #   volumes:
-  #     - .:/code
-  #   ports:
-  #     - "8000:8000"
-  #   links:
-  #     - "cnn:cnn"
-  # cnn:
-  #   image: tensorflow/serving
-  #   volumes:
-  #     - './saved_model/cnnmodel/cnn_model:/models/cnn_model'
-  #   environment:
-  #     MODEL_NAME: 'cnn_model'
-  #   ports:
-  #     - "8501:8501"
+  web:
+    build: 
+      context: ecg_analysis_backend
+    command: python3 ecg_analysis_backend/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    links:
+      - "cnn:cnn"
+  cnn:
+    image: tensorflow/serving
+    volumes:
+      - './saved_model/cnnmodel/cnn_model:/models/cnn_model'
+    environment:
+      MODEL_NAME: 'cnn_model'
+    ports:
+      - "8501:8501"
   front: 
     build:
       context: ecg_analysis_frontend
@@ -26,3 +26,5 @@ services:
       - './ecg_analysis_frontend/ecg-frontend:/app'
     ports:
       - '3000:3000'
+    links:
+      - "web:web"
