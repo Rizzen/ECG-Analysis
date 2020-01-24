@@ -16,7 +16,7 @@ class FileProcessor(object):
             val = np.expand_dims(val, 2)
             tf_row = val.tolist()
             tf_req = json.dumps({'instances': tf_row})
-            req = requests.post('http://localhost:8501/v1/models/cnn_model:predict', data=tf_req)
+            req = requests.post('http://cnn:8501/v1/models/cnn_model:predict', data=tf_req)
             prediction = req.json()['predictions']
             predictions.append(prediction)
             print(prediction)
