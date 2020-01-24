@@ -1,6 +1,5 @@
 import React from 'react';
-import logo from './logo.svg';
-import lg from './tensorflow-icon.svg';
+import lg from './ecg.svg';
 import './App.css';
 
 import SimpleReactFileUpload from "./Uploader";
@@ -10,9 +9,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={lg} className="App-logo" alt="logo" />
-        <p>
-          Upload file to get predictions
-        </p>
+        <h2>ECG Analyser</h2>
         <a
           className="App-link"
           href="https://reactjs.org"

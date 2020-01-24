@@ -1,5 +1,5 @@
 import React from 'react'
-import axios, { post } from 'axios';
+import { post } from 'axios';
 
 class SimpleReactFileUpload extends React.Component {
     constructor(props) {
@@ -39,7 +39,7 @@ class SimpleReactFileUpload extends React.Component {
     render() {
         return (
             <form onSubmit={this.onFormSubmit}>
-                <h1>File Upload</h1>
+                <h3>Upload file to get predictions</h3>
                 <input type="file" onChange={this.onChange} />
                 <button type="submit">Upload</button>
                 <br/>
