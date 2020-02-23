@@ -86,9 +86,15 @@ class Preprocessor (object):
 
     @staticmethod
     def load_mitbih(directory_path):
-        df_train = pd.read_csv (directory_path + "mitbih_train2.csv", header = None) # , index_col = 0
-        df_test = pd.read_csv (directory_path + "mitbih_test2.csv", header = None)
+        df_train = pd.read_csv (directory_path + "mitbih_train.csv", header = None) # , index_col = 0
+        df_test = pd.read_csv (directory_path + "mitbih_test.csv", header = None)
         return df_train, df_test
+
+    @staticmethod
+    def load_ptbdb(directory_path):
+        abnormal = pd.read_csv (directory_path + "ptbdb_abnormal.csv", header = None) # , index_col = 0
+        normal = pd.read_csv (directory_path + "ptbdb_normal.csv", header = None)
+        return abnormal, normal
 
     @staticmethod
     def CNN_preprocessor(train_data, test_data, val_size, test_size):
