@@ -41,7 +41,7 @@ def discretize_x(x_arr: [], y_arr: [], frequency: int, t_max: float) -> ([], [])
     x_max = max(x_arr)
     modifier = x_max / t_max
 
-    curr = min(y)
+    curr = min(y_arr)
     delta = 1 / frequency
     iter_count = int(t_max / delta)
 
@@ -52,16 +52,16 @@ def discretize_x(x_arr: [], y_arr: [], frequency: int, t_max: float) -> ([], [])
         scaled = curr * modifier
         x_new.append(scaled)
 
-    f = interpolate.interp1d(y, x, bounds_error=False, fill_value='extrapolate')
+    f = interpolate.interp1d(x_arr, y_arr, bounds_error=False, fill_value='extrapolate')
     y_new = f(x_new)
 
     return x_new, y_new
 
 
-x, y = read_csv_data("data2.csv")
-show_seq_dots(y, x)
+x_data, y_data = read_csv_data("data2.csv")
+show_seq_dots(y_data, x_data)
 
-x_new, y_new = discretize_x(y, x, 125, 9.2)
+x_new, y_new = discretize_x(y_data, x_data, 125, 9.2)
 
 show_seq_dots(x_new, y_new)
 show_seq(x_new, y_new)
