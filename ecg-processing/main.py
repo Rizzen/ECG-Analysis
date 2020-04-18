@@ -100,25 +100,39 @@ def shift_slice_and_categorize(array: [], array_size: int, shift: int, category:
     return split
 
 
+def process_directory(directory: str, frequency: int, sample_len: float, target_sample_size: int, category: int) \
+        -> [[float]]:
+    os.chdir(directory)
+    files = glob.glob("*.csv")
+
+    res = []
+    for file in files:
+        x_data, y_data = read_csv_data(file)
+        x_new, y_new = discretize_x(x_data, y_data, frequency, sample_len)
+        v = shift_slice_and_categorize(y_new, target_sample_size, int(frequency / 2), category)
+        for arr in v:
+            res.append(arr)
+
+    return res
+
+
 #  ['N': 0, 'S': 1, 'V': 2, 'F': 3, 'Q': 4]
 # наджелудочковая - S = 1
 # желудочковая - V = 2
-in_directory = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/наджелудочковая"
+in_directory_one = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/наджелудочковая"
+in_directory_two = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/желудочковая"
+in_directory_three = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/норма"
+
 out_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data.csv"
 frequency = 125
 sample_length = 9.2  # seconds
 target_sample_size = 187  # items
-category = 1
 
-os.chdir(in_directory)
-files = glob.glob("*.csv")
+cat_one = process_directory(in_directory_one, frequency, sample_length, target_sample_size, 1)
+cat_two = process_directory(in_directory_two, frequency, sample_length, target_sample_size, 2)
+cat_three = process_directory(in_directory_three, frequency, sample_length, target_sample_size, 0)
 
-res = []
-for file in files:
-    x_data, y_data = read_csv_data(file)
-    x_new, y_new = discretize_x(x_data, y_data, frequency, sample_length)
-    v = shift_slice_and_categorize(y_new, target_sample_size, int(frequency / 2), 1)
-    for arr in v:
-        res.append(arr)
+cat_one.extend(cat_two)
+cat_one.extend(cat_three)
 
-write_result_to_csv_file(out_file, res)
+write_result_to_csv_file(out_file, cat_one)
