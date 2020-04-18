@@ -116,6 +116,13 @@ def process_directory(directory: str, frequency: int, sample_len: float, target_
     return res
 
 
+def train_test_split(array: []) -> ([], []):
+    anchor = len(array) - int(len(array) / 4)
+    train = array[:anchor]
+    test = array[anchor:]
+    return train, test
+
+
 #  ['N': 0, 'S': 1, 'V': 2, 'F': 3, 'Q': 4]
 # наджелудочковая - S = 1
 # желудочковая - V = 2
@@ -123,16 +130,31 @@ in_directory_one = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/наджел
 in_directory_two = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/желудочковая"
 in_directory_three = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/норма"
 
-out_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data.csv"
+out_train_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data-train.csv"
+out_test_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data-test.csv"
 frequency = 125
 sample_length = 9.2  # seconds
 target_sample_size = 187  # items
 
+train = []
+test = []
+
 cat_one = process_directory(in_directory_one, frequency, sample_length, target_sample_size, 1)
+
 cat_two = process_directory(in_directory_two, frequency, sample_length, target_sample_size, 2)
 cat_three = process_directory(in_directory_three, frequency, sample_length, target_sample_size, 0)
 
-cat_one.extend(cat_two)
-cat_one.extend(cat_three)
+one_train, one_test = train_test_split(cat_one)
+train.extend(one_train)
+test.extend(one_test)
 
-write_result_to_csv_file(out_file, cat_one)
+two_train, two_test = train_test_split(cat_two)
+train.extend(two_train)
+test.extend(two_test)
+
+three_train, three_test = train_test_split(cat_three)
+train.extend(three_train)
+test.extend(three_test)
+
+write_result_to_csv_file(out_train_file, train)
+write_result_to_csv_file(out_test_file, test)
