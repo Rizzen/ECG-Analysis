@@ -40,6 +40,11 @@ def read_csv_data(filepath: str) -> ([], []):
     return x, y
 
 
+def read_csv_mit_bih(filepath: str) -> [[]]:
+    with open(filepath, newline='') as csv_file:
+        data = list(csv.reader(csv_file))
+        return data
+
 def write_result_to_csv_file(filepath: str,  result:[[]]):
     with open(filepath, 'w') as result_file:
         wr = csv.writer(result_file)
@@ -123,12 +128,37 @@ def train_test_split(array: []) -> ([], []):
     return train, test
 
 
+def just_classify(lst: [(str, int)]) -> ([], []):
+    train = []
+    test = []
+    for i in lst:
+        os.chdir(i[0])
+        files = glob.glob("*.csv")
+        dir_res = []
+        for file in files:
+            arr = read_csv_mit_bih(file)
+            arr[0].append(i[1])
+            dir_res.append(arr[0])
+        trn, tst = train_test_split(dir_res)
+        train.extend(trn)
+        test.extend(tst)
+    return train, test
+
 #  ['N': 0, 'S': 1, 'V': 2, 'F': 3, 'Q': 4]
 # наджелудочковая - S = 1
 # желудочковая - V = 2
-in_directory_one = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/наджелудочковая"
-in_directory_two = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/желудочковая"
-in_directory_three = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/норма"
+
+dir_cat_list = [
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/наджелудочковая", 1),
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/желудочковая", 2),
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/raw/норма", 0)
+]
+
+classify_list = [
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/by-elikov/N", 0),
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/by-elikov/S", 1),
+    ("/Users/mark.tkachenko/Projects/OSS/ECG-Data/by-elikov/F", 3)
+]
 
 out_train_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data-train.csv"
 out_test_file = "/Users/mark.tkachenko/Projects/OSS/ECG-Data/mit-bih-format/ecg-data-test.csv"
@@ -136,25 +166,18 @@ frequency = 125
 sample_length = 9.2  # seconds
 target_sample_size = 187  # items
 
+
 train = []
 test = []
+for dir_cat in dir_cat_list:
+    proc_res = process_directory(dir_cat[0], frequency, sample_length, target_sample_size, dir_cat[1])
+    one_train, one_test = train_test_split(proc_res)
+    train.extend(one_train)
+    test.extend(one_test)
 
-cat_one = process_directory(in_directory_one, frequency, sample_length, target_sample_size, 1)
-
-cat_two = process_directory(in_directory_two, frequency, sample_length, target_sample_size, 2)
-cat_three = process_directory(in_directory_three, frequency, sample_length, target_sample_size, 0)
-
-one_train, one_test = train_test_split(cat_one)
-train.extend(one_train)
-test.extend(one_test)
-
-two_train, two_test = train_test_split(cat_two)
-train.extend(two_train)
-test.extend(two_test)
-
-three_train, three_test = train_test_split(cat_three)
-train.extend(three_train)
-test.extend(three_test)
+trn, tst = just_classify(classify_list)
+train.extend(trn)
+test.extend(tst)
 
 write_result_to_csv_file(out_train_file, train)
 write_result_to_csv_file(out_test_file, test)
