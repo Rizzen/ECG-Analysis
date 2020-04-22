@@ -97,6 +97,12 @@ class Preprocessor (object):
         return abnormal, normal
 
     @staticmethod
+    def load_ecg(directory_path):
+        df_train = pd.read_csv(directory_path + "ecg-data-train.csv", header = None)  # , index_col = 0
+        df_test = pd.read_csv(directory_path + "ecg-data-train.csv", header = None)
+        return df_train, df_test
+
+    @staticmethod
     def CNN_preprocessor(train_data, test_data, val_size, test_size):
         # Extract data from df into numpy array
         X, y = Preprocessor.split_df (train_data)

@@ -11,6 +11,8 @@ import numpy as np  # linear algebra
 import pandas as pd
 from tensorflow import keras
 
+
+tf.random.set_seed(42)
 def explore_data(df_train, df_test, abnormal, normal):
     fullmitbih = pd.DataFrame(
         {'Category':pd.concat([df_test, df_train]) [187]})
@@ -70,9 +72,12 @@ def save_model_for_serving(model):
         outputs = {t.name:t for t in model.outputs})
 
 
-# working with data
+# working with dataload_ecg
 df_train, df_test = Preprocessor.load_mitbih("")
-abnormal, normal = Preprocessor.load_ptbdb("")
+df_train_ecg, df_test_ecg = Preprocessor.load_ecg("")
+
+df_train.append(df_train_ecg)
+df_test.append(df_test_ecg)
 
 X_train, y_train, X_val, y_val, X_test, y_test = Preprocessor.CNN_preprocessor(df_train, df_test, 800, 2000)
 
@@ -91,7 +96,8 @@ history = model.fit(X_train, y_train,
                     callbacks = [h_params ['lrate']])
 
 vizualize_history(history)
-
+accr = model.evaluate(X_test, y_test)
+print('Test set\n  Loss: {:0.3f}\n  Accuracy: {:0.3f}'.format(accr[0],accr[1]))
 #save_model_for_serving(model)
 #y_pred = model.predict(X_test, batch_size=1000)
 
